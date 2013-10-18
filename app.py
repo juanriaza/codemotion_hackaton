@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, render_template, json
+from flask import Flask, render_template, json, request
 
 
 app = Flask(__name__)
@@ -14,12 +14,8 @@ def home():
 def recommend():
     loc = request.args.get('loc', None)
     app.logger.debug(loc)
-    cat = request.args.get('cat', 'mex')
+    cat = request.args.get('cat')
     app.logger.debug(cat)
-
-    cat_map = {
-        'mex': '4bf58dd8d48988d1c1941735'
-    }
 
     params_4sq = {
         'client_id': 'VBOVRLQQQLGGZNPIGYMQ1RDTMGM1ANWM3ZQQT1IBARMYTTPM',
@@ -27,10 +23,10 @@ def recommend():
         'v': '20130815',
         'section': 'food',
         'limit': 10,
-        'categoryId': cat_map[cat]
+        'categoryId': cat
     }
     if loc:
-        params_4sq.update({'loc': loc})
+        params_4sq.update({'ll': loc})
     else:
         params_4sq.update({'near': 'Madrid'})
     # req = requests.get('https://api.foursquare.com/v2/venues/categories', params=params_4sq)

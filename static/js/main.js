@@ -15,7 +15,13 @@ var $rest = $(".restaurants");
 ].forEach(function(data){
     $('<p><a class="btn btn-primary btn-lg resttype"><img src="https://ss1.4sqi.net/img/categories_v2/food/' + data[0] + '_64.png"/>' + data[1] + '</a></p>')
         .click(function(){
-            alert("pues te jodes");
+            var params = {
+                "loc": [loc.latitude, loc.longitude].join(","),
+                "cat": data[2]
+            };
+            $.get("/recommend", params, function(res){
+                console.log(res);
+            });
         })
         .appendTo($rest);
 });
