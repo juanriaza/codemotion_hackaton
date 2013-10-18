@@ -1,7 +1,9 @@
 import requests
-from flask import Flask, render_template, json
+from flask import Flask, render_template, json, request
+from werkzeug.contrib.cache import SimpleCache
 
 
+cache = SimpleCache()
 app = Flask(__name__)
 
 
@@ -12,11 +14,19 @@ def home():
 
 @app.route('/recommend')
 def recommend():
-    loc = request.args.get('loc', None)
+    loc = request.args.get('loc', '')
     app.logger.debug(loc)
     cat = request.args.get('cat', 'mex')
     app.logger.debug(cat)
 
+    rv = cache.get('%s%s' % (cat, loc))
+    if rv is None:
+        rv = get_recommendation(loc, cat)
+        cache.set('%s%s' % (cat, loc), rv, timeout=5 * 60)
+    return rv
+
+
+def get_recommendation(loc, cat):
     cat_map = {
         'mex': '4bf58dd8d48988d1c1941735'
     }
@@ -36,24 +46,37 @@ def recommend():
     # req = requests.get('https://api.foursquare.com/v2/venues/categories', params=params_4sq)
     req_4sq = requests.get('https://api.foursquare.com/v2/venues/search', params=params_4sq)
 
-    '''
-    doc = {
-        "document": {
-            "id": "0",
-            "txt": "Se come muy mal",
+    def parse_tip(tip):
+        doc = {
+            "document": {
+                "id": "0",
+                "txt": tip['text'],
+            }
         }
-    }
 
-    params_textalytics = {
-        'key': '22b6a55eab21eb20956914a75264f354',
-        'doc': json.dumps(doc)
-    }
-    req = requests.post('https://textalytics.com/api/media/1.0/analyze',
-        params=params_textalytics,
-        verify=False)
-    '''
+        params_textalytics = {
+            'key': '22b6a55eab21eb20956914a75264f354',
+            'doc': json.dumps(doc)
+        }
+        req = requests.post('https://textalytics.com/api/media/1.0/analyze',
+            params=params_textalytics,
+            verify=False)
+        tip['anal'] = req.json()
+        return tip
 
-    return req_4sq.content
+    def parse_venue(venue):
+        venue_id = venue['id']
+        req_venue = requests.get('https://api.foursquare.com/v2/venues/%s/tips' % venue_id,
+            params=params_4sq)
+        # app.logger.debug(req_venue.content)
+        tips_data = req_venue.json()['response']['tips']['items']
+        tips = map(parse_tip, tips_data)
+        # app.logger.debug(tips)
+        venue['tips'] = tips
+        return venue
+    venues_4sq = map(parse_venue, req_4sq.json()['response']['venues'])
+
+    return str(venues_4sq)
 
 if __name__ == "__main__":
     app.run(debug=True)
