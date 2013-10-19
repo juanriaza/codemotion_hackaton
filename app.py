@@ -61,7 +61,7 @@ def get_recommendation(loc, cat):
         req = requests.post('https://textalytics.com/api/media/1.0/analyze',
             params=params_textalytics,
             verify=False)
-        tip['anal'] = req.json
+        tip['anal'] = req.json()
         return tip
 
     def parse_venue(venue):
@@ -69,12 +69,12 @@ def get_recommendation(loc, cat):
         req_venue = requests.get('https://api.foursquare.com/v2/venues/%s/tips' % venue_id,
             params=params_4sq)
         # app.logger.debug(req_venue.content)
-        tips_data = req_venue.json['response']['tips']['items']
+        tips_data = req_venue.json()['response']['tips']['items']
         tips = map(parse_tip, tips_data[:4])
         # app.logger.debug(tips)
         venue['tips'] = tips
         return venue
-    venues_4sq = map(parse_venue, req_4sq.json['response']['venues'][:4])
+    venues_4sq = map(parse_venue, req_4sq.json()['response']['venues'][:4])
 
     return json.dumps(venues_4sq)
 
