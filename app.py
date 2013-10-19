@@ -1,9 +1,6 @@
 import requests
 from flask import Flask, render_template, json, request
-<<<<<<< HEAD
 from werkzeug.contrib.cache import SimpleCache
-=======
->>>>>>> 738de6efba9f6f67250aeccee2446f184cbc4dca
 
 
 cache = SimpleCache()
