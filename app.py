@@ -1,4 +1,8 @@
+from gevent import monkey
+monkey.patch_all(thread=False)
+
 import requests
+import grequests
 from flask import Flask, render_template, json, request
 from werkzeug.contrib.cache import SimpleCache
 
@@ -64,17 +68,18 @@ def get_recommendation(loc, cat):
         tip['anal'] = req.json()
         return tip
 
-    def parse_venue(venue):
-        venue_id = venue['id']
-        req_venue = requests.get('https://api.foursquare.com/v2/venues/%s/tips' % venue_id,
-            params=params_4sq)
+    def parse_venue(req_venue):
         # app.logger.debug(req_venue.content)
         tips_data = req_venue.json()['response']['tips']['items']
         tips = map(parse_tip, tips_data[:4])
         # app.logger.debug(tips)
         venue['tips'] = tips
         return venue
-    venues_4sq = map(parse_venue, req_4sq.json()['response']['venues'][:4])
+    venues_urls = ['https://api.foursquare.com/v2/venues/%s/tips' % venue['id']
+        for venue in req_4sq.json()['response']['venues'][:4]]
+    venues_req = (grequests.get(u, params=params_4sq) for u in venues_urls)
+    venues_response = grequests.map(rs)
+    venues_4sq = map(parse_venue, venues_response)
 
     return json.dumps(venues_4sq)
 
