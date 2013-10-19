@@ -19,10 +19,10 @@ def recommend():
     cat = request.args.get('cat')
     app.logger.debug(cat)
 
-    rv = cache.get('%s%s' % (cat, loc))
+    rv = cache.get(cat)
     if rv is None:
         rv = get_recommendation(loc, cat)
-        cache.set('%s%s' % (cat, loc), rv, timeout=500 * 60)
+        cache.set(cat, rv, timeout=500 * 60)
     return rv
 
 
