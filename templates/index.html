@@ -9,11 +9,26 @@
     </head>
     <body>
         <div class="container">
-            <div class="jumbotron">
+            <div class="jumbotron selCat">
                 <div class="container">
                     <h1>Happy<strong>Eat</strong></h1>
                     <p> Que quieres comer hoy?</p>
                     <div class="restaurants"></div>
+                </div>
+            </div>
+            <div class="loading">
+                Loading...
+                <div class="progress progress-striped active">
+                  <div class="progress-bar"  role="progressbar" style="width: 100%">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+            </div>
+            <div class="jumbotron restaurant">
+                <div class="container">
+                    <h1 class="restaurant-name"></h1>
+                    <p class="restaurant-address"></p>
+                    <a href="#" class="btn btn-primary btn-otro btn-lg">Otro</a>
                 </div>
             </div>
         </div>

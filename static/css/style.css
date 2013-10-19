@@ -22,6 +22,12 @@ h1{
     margin: 40px 0;
 }
 
+.loading {
+    width: 300px;
+    padding-top: 200px;
+    text-align: center;
+    margin: 0 auto;
+}
 
 h1 strong{
     font-family: 'Lobster', cursive;

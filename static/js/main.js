@@ -1,8 +1,33 @@
 
+$(".loading").hide();
+$(".restaurant").hide();
+
+
 var loc = {
     latitude: 40.388850,
     longitude: -3.628063
 };
+
+var venues = null;
+
+function renderVenue() {
+    $(".restaurant").show();
+    if(venues.length){
+        var venue = venues[0];
+        $(".restaurant-name").text(venue.name);
+        $(".restaurant-address").text(venue.location.address);
+        $(".restaurant-distance").text(venue.location.distance);
+    }
+}
+
+$(".btn-otro").click(function(){
+    venues.shift();
+    renderVenue();
+    if(venues.length == 1){
+        $(".btn-otro").hide();
+    }
+    return false;
+});
 
 var $rest = $(".restaurants");
 
@@ -15,13 +40,19 @@ var $rest = $(".restaurants");
 ].forEach(function(data){
     $('<p><a class="btn btn-primary btn-lg resttype"><img src="https://ss1.4sqi.net/img/categories_v2/food/' + data[0] + '_64.png"/>' + data[1] + '</a></p>')
         .click(function(){
+            $(".loading").show();
+            $(".selCat").hide();
             var params = {
                 "loc": [loc.latitude, loc.longitude].join(","),
                 "cat": data[2]
             };
             $.get("/recommend", params, function(res){
-                console.log(res);
+                res = JSON.parse(res);
+                venues = res.response.venues;
+                $(".loading").hide();
+                renderVenue();
             });
+            return false;
         })
         .appendTo($rest);
 });
