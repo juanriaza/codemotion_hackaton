@@ -22,7 +22,7 @@ def recommend():
     rv = cache.get('%s%s' % (cat, loc))
     if rv is None:
         rv = get_recommendation(loc, cat)
-        cache.set('%s%s' % (cat, loc), rv, timeout=5 * 60)
+        cache.set('%s%s' % (cat, loc), rv, timeout=500 * 60)
     return rv
 
 
@@ -61,7 +61,7 @@ def get_recommendation(loc, cat):
         req = requests.post('https://textalytics.com/api/media/1.0/analyze',
             params=params_textalytics,
             verify=False)
-        tip['anal'] = req.json()
+        tip['anal'] = req.json
         return tip
 
     def parse_venue(venue):
@@ -69,14 +69,14 @@ def get_recommendation(loc, cat):
         req_venue = requests.get('https://api.foursquare.com/v2/venues/%s/tips' % venue_id,
             params=params_4sq)
         # app.logger.debug(req_venue.content)
-        tips_data = req_venue.json()['response']['tips']['items']
-        tips = map(parse_tip, tips_data)
+        tips_data = req_venue.json['response']['tips']['items']
+        tips = map(parse_tip, tips_data[:4])
         # app.logger.debug(tips)
         venue['tips'] = tips
         return venue
-    venues_4sq = map(parse_venue, req_4sq.json()['response']['venues'])
+    venues_4sq = map(parse_venue, req_4sq.json['response']['venues'][:4])
 
-    return str(venues_4sq)
+    return json.dumps(venues_4sq)
 
 if __name__ == "__main__":
     app.run(debug=True)

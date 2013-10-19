@@ -47,8 +47,9 @@ var $rest = $(".restaurants");
                 "cat": data[2]
             };
             $.get("/recommend", params, function(res){
+                console.log(res);
                 res = JSON.parse(res);
-                venues = res.response.venues;
+                venues = res;
                 $(".loading").hide();
                 renderVenue();
             });
