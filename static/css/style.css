@@ -29,6 +29,21 @@ h1{
     margin: 0 auto;
 }
 
+blockquote {
+    border-color: #888;
+    text-align: left;
+}
+
+blockquote.P {
+    border-color: green;
+}
+blockquote.N{
+    border-color: red;
+}
+blockquote.ERR{
+    border-color: #d97512;
+}
+
 h1 strong{
     font-family: 'Lobster', cursive;
 }

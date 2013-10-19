@@ -17,6 +17,10 @@ function renderVenue() {
         $(".restaurant-name").text(venue.name);
         $(".restaurant-address").text(venue.location.address);
         $(".restaurant-distance").text(venue.location.distance);
+        $(".quotes").empty();
+        venue.tips.forEach(function(tip){
+            $("<blockquote/>").append($("<p/>").text(tip.text)).addClass((tip && tip.anal && tip.anal.result && tip.anal.result.sentiment) || "ERR").appendTo(".quotes");
+        });
     }
 }
 
@@ -47,8 +51,8 @@ var $rest = $(".restaurants");
                 "cat": data[2]
             };
             $.get("/recommend", params, function(res){
-                console.log(res);
                 res = JSON.parse(res);
+                console.log(res);
                 venues = res;
                 $(".loading").hide();
                 renderVenue();
