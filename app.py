@@ -1,6 +1,9 @@
 import requests
 from flask import Flask, render_template, json, request
+<<<<<<< HEAD
 from werkzeug.contrib.cache import SimpleCache
+=======
+>>>>>>> 738de6efba9f6f67250aeccee2446f184cbc4dca
 
 
 cache = SimpleCache()
@@ -9,14 +12,14 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('index.html')
 
 
 @app.route('/recommend')
 def recommend():
     loc = request.args.get('loc', '')
     app.logger.debug(loc)
-    cat = request.args.get('cat', 'mex')
+    cat = request.args.get('cat')
     app.logger.debug(cat)
 
     rv = cache.get('%s%s' % (cat, loc))
@@ -37,10 +40,10 @@ def get_recommendation(loc, cat):
         'v': '20130815',
         'section': 'food',
         'limit': 10,
-        'categoryId': cat_map[cat]
+        'categoryId': cat
     }
     if loc:
-        params_4sq.update({'loc': loc})
+        params_4sq.update({'ll': loc})
     else:
         params_4sq.update({'near': 'Madrid'})
     # req = requests.get('https://api.foursquare.com/v2/venues/categories', params=params_4sq)

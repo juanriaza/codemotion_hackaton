@@ -1,0 +1,29 @@
+
+.resttype {
+    width: 350px;
+    text-align: left;
+    padding-left: 40px;
+    line-height: 68px;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.resttype img{
+    float: left;
+    margin-right: 10px;
+}
+
+.jumbotron {
+    text-align: center;
+}
+
+
+h1{
+    margin: 40px 0;
+}
+
+
+h1 strong{
+    font-family: 'Lobster', cursive;
+}
+
